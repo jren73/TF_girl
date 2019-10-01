@@ -17,6 +17,8 @@ git checkout -b local v4.9
 cd linux-stable
 patch -p1 < ../profile.patch
 ```
+5. Call to profile
+sys(332,NULL,NULL)
 
 ## Tips:
 /bin/sh: 1: bc: not found
