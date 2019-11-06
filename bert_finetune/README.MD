@@ -1,5 +1,6 @@
 How to run?
-'''
+
+```
 python run_classifier.py \
   --task_name=MRPC \
   --do_train=true \
@@ -13,9 +14,9 @@ python run_classifier.py \
   --learning_rate=2e-5 \
   --num_train_epochs=3.0 \
   --output_dir=/home/cc/bert/mrpc_output/
-'''
+```
 
-'''
+```
 python run_classifier_rte.py \
   --task_name=RTE \
   --do_train=true \
@@ -29,8 +30,9 @@ python run_classifier_rte.py \
   --learning_rate=2e-5 \
   --num_train_epochs=3.0 \
   --output_dir=/home/cc/bert/rte_output/
-'''
-'''
+```
+
+```
 python run_scorer.py \
   --task_name=STS \
   --do_train=true \
@@ -44,3 +46,4 @@ python run_scorer.py \
   --learning_rate=2e-5 \
   --num_train_epochs=3.0 \
   --output_dir=/home/cc/BERT_STS-B/sts_output/
+  ```
