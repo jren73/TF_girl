@@ -723,8 +723,8 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
       train_op = optimization.create_optimizer(
           total_loss, learning_rate, num_train_steps, num_warmup_steps, use_tpu)
 
-
-      logging_hook = tf.train.LoggingTensorHook({"loss" : total_loss, "accuracy" : total_accuracy}, every_n_iter=num_train_steps)
+      iter_num = int(num_train_steps/FLAGS.num_train_epochs)
+      logging_hook = tf.train.LoggingTensorHook({"loss" : total_loss, "accuracy" : total_accuracy}, every_n_iter=iter_num)
       output_spec = tf.contrib.tpu.TPUEstimatorSpec(
           mode=mode,
           loss=total_loss,
