@@ -722,13 +722,15 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
 
       train_op = optimization.create_optimizer(
           total_loss, learning_rate, num_train_steps, num_warmup_steps, use_tpu)
-          
-      logging_hook = tf.train.LoggingTensorHook({"loss" : total_loss, "accuracy" : accuracy, "training_step": num_train_steps}, every_n_iter=10)
+
+
+      logging_hook = tf.train.LoggingTensorHook({"loss" : total_loss, "accuracy" : total_accuracy}, every_n_iter=num_train_steps)
       output_spec = tf.contrib.tpu.TPUEstimatorSpec(
           mode=mode,
           loss=total_loss,
           train_op=train_op,
-          scaffold_fn=scaffold_fn)
+          scaffold_fn=scaffold_fn,
+          training_hooks=[logging_hook])
     elif mode == tf.estimator.ModeKeys.EVAL:
 
       def metric_fn(per_example_loss, label_ids, logits, is_real_example):
