@@ -36,9 +36,10 @@ for lr in $Learning_Rate; do
         fi
 
         APP_CMD="python $program --train_batch_size=$bs --learning_rate=$lr --output_dir=$res_dir"
-        #echo "$APP_CMD" | tee -a $result
-        stdbuf -oL $APP_CMD 2>&1 | tee -a $result &
-        sleep 1h
+        echo "$APP_CMD" | tee -a $result
+        stdbuf -oL $APP_CMD 2>&1 | tee -a $result
+        #stdbuf -oL $APP_CMD 2>&1 | tee -a $result &
+        #sleep 1h
         '''
         while [ 1 = 1 ]; do
         app_status="`ps -ax|grep run_classifier`"
