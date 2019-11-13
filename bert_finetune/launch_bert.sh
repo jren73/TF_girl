@@ -8,7 +8,10 @@ Task_Name="MRPC"
 Data_Dir_Name="MRPC"
 
 RESULT_DIR="result_dir-$Task_Name"
-mkdir $RESULT_DIR 2>/dev/zero
+if [ ! -d "$RESULT_DIR" ];then
+    mkdir $RESULT_DIR 2>/dev/zero
+fi
+
 program_home="`echo ~`"
 program="$program_home/bert/run_test.py \
   --task_name=$Task_Name \
