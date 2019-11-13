@@ -1,14 +1,17 @@
 #!/bin/sh
 
 Learning_Rate="0.00002 0.00003 0.00005"
-#Batch_Size="32 64"
+Batch_Size="32 64"
 #Learning_Rate="0.00005 0.00003"
-Batch_Size="64"
-Task_Name="MRPC"
-Data_Dir_Name="MRPC"
+#Batch_Size="64"
+Task_Name="RTE"
+Data_Dir_Name="RTE"
 
 RESULT_DIR="result_dir-$Task_Name"
-mkdir $RESULT_DIR 2>/dev/zero
+if [ ! -d "$RESULT_DIR" ];then
+    mkdir $RESULT_DIR 2>/dev/zero
+fi
+
 program_home="`echo ~`"
 program="$program_home/bert/run_test.py \
   --task_name=$Task_Name \
@@ -40,15 +43,5 @@ for lr in $Learning_Rate; do
         stdbuf -oL $APP_CMD 2>&1 | tee -a $result
         #stdbuf -oL $APP_CMD 2>&1 | tee -a $result &
         #sleep 1h
-        '''
-        while [ 1 = 1 ]; do
-        app_status="`ps -ax|grep run_classifier`"
-
-        if [ "app_status" -eq "" ]; then
-        break
-        fi
-        done
-        #stdbuf -oL $APP_CMD | tee $result &
-        '''
     done
 done
