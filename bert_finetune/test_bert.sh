@@ -19,7 +19,8 @@ echo "Detected cpus       : $CPUS_NUM"
 
 
 
-
+Task_Name="RTE"
+Data_Dir_Name="RTE"
 #30 minutes
 #kill_timeout="`expr 30 * 60`"
 
@@ -32,8 +33,9 @@ echo "PER_NODE_THREADS=$PER_NODE_THREADS"
 #echo "PER_NODE_MEM_SIZE=$PER_NODE_MEM_SIZE"
 
 #1G 2G 3G
-FASTMEM_SIZE_LIST="`seq 4096 4096 16384`"
-
+#FASTMEM_SIZE_LIST="`seq 4096 4096 16384`"
+FASTMEM_SIZE_LIST="1 3584 7168 14336 46080"
+#FASTMEM_SIZE_LIST="1"
 
 echo "FASTMEM_SIZE_LIST=`echo $FASTMEM_SIZE_LIST`"
 
@@ -43,10 +45,10 @@ GLUE_DIR="/home/cc/bert/glue_data/"
 #program="$program_home/models/official/wide_deep/census_main.py --train_epochs=5"
 #program="$program_home/DCGAN-tensorflow/main.py --dataset mnist --input_height=28 --output_height=28 --train --epoch=1"
 program="$program_home/bert/run_classifier.py \
-  --task_name=MRPC \
+  --task_name=$Task_Name \
   --do_train=true \
   --do_eval=true \
-  --data_dir=$GLUE_DIR/MRPC \
+  --data_dir=$GLUE_DIR/$Data_Dir_Name \
   --vocab_file=$BERT_BASE_DIR/vocab.txt \
   --bert_config_file=$BERT_BASE_DIR/bert_config.json \
   --init_checkpoint=$BERT_BASE_DIR/bert_model.ckpt \
@@ -63,10 +65,10 @@ for memsize in $FASTMEM_SIZE_LIST; do
 	echo "fastmemsize=$memsize MB thp=0"
 
 	#--kill-timeout=$kill_timeout
-	./launch_testee.sh      --thp-migration=0 \
+	./launch_testee.sh    	--thp-migration=0 \
             	            --fast-mem-size=$memsize \
                 	        --migration-threads-num=$PER_NODE_THREADS \
-                    	    python $program "--output_dir=$program_home/bert/mrpc_output_$memsize/" "--version=test_fastmem_$memsize""_MB_thp_0"
+                    	    python $program "--output_dir=$program_home/bert/$Task_Name""_output_$memsize/" "--version=test_fastmem_$memsize""_MB_thp_0"
 
 #	echo "fastmemsize=$memsize MB thp=1"
 #
