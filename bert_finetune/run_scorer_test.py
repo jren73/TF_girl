@@ -412,9 +412,9 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
     
     # per_example_loss = -tf.reduce_sum(one_hot_labels * log_probs, axis=-1)
     loss = tf.reduce_mean(per_example_loss)
-    #total_pearson = tf.contrib.metrics.streaming_pearson_correlation(logits, labels)
+    pearson = tf.contrib.metrics.streaming_pearson_correlation(logits, labels)
 
-    return (loss, per_example_loss, logits)
+    return (loss, pearson, per_example_loss, logits)
 
 
 def model_fn_builder(bert_config, init_checkpoint, learning_rate,
@@ -436,7 +436,7 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
 
     is_training = (mode == tf.estimator.ModeKeys.TRAIN)
 
-    (total_loss, per_example_loss, logits) = create_model(
+    (total_loss, total_pearson, per_example_loss, logits) = create_model(
         bert_config, is_training, input_ids, input_mask, segment_ids, label_ids,
         use_one_hot_embeddings)
 
@@ -470,18 +470,15 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
 
       train_op = optimization.create_optimizer(
           total_loss, learning_rate, num_train_steps, num_warmup_steps, use_tpu)
-
-      #total_pearson = tf.contrib.metrics.streaming_pearson_correlation(logits, label_ids)
-      #print("====================\n")
-      #print(total_pearson)
+      
       iter_num = int(num_train_steps/FLAGS.num_train_epochs)
-      logging_hook = tf.train.LoggingTensorHook({"training_loss" : total_loss}, every_n_iter=iter_num)
-      #logging_hook = tf.train.LoggingTensorHook({"training_loss" : total_loss}, every_n_iter=iter_num)
+      logging_hook = tf.train.LoggingTensorHook({"loss" : total_loss, "pearson" : total_pearson}, every_n_iter=iter_num)
+      
       output_spec = tf.contrib.tpu.TPUEstimatorSpec(
           mode=mode,
           loss=total_loss,
           train_op=train_op,
-          scaffold_fn=scaffold_fn,#)
+          scaffold_fn=scaffold_fn,
           training_hooks=[logging_hook])
 
     elif mode == tf.estimator.ModeKeys.EVAL:
